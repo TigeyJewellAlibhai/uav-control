@@ -3,7 +3,7 @@ import rospy
 import tf
 from geometry_msgs.msg import Pose, PoseStamped, Twist, Quaternion
 from mavros_msgs.msg import OverrideRCIn
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import CompressedImage
 from mavros_msgs.msg import RCIn
 from mavros_msgs.srv import CommandBool
 from mavros_msgs.srv import SetMode
@@ -23,7 +23,7 @@ class MavController:
         rospy.init_node("mav_control_node")
         rospy.Subscriber("/mavros/local_position/pose", PoseStamped, self.pose_callback)
         rospy.Subscriber("/mavros/rc/in", RCIn, self.rc_callback)
-        rospy.Subscriber("raspicam_node/image/compressed", Image, self.image_callback)
+        rospy.Subscriber("raspicam_node/image/compressed", CompressedImage, self.image_callback)
 
         self.cmd_pos_pub = rospy.Publisher("/mavros/setpoint_position/local", PoseStamped, queue_size=1)
         self.cmd_vel_pub = rospy.Publisher("/mavros/setpoint_velocity/cmd_vel_unstamped", Twist, queue_size=1)
@@ -39,7 +39,7 @@ class MavController:
 
         self.rc = RCIn()
         self.pose = Pose()
-        self.cv_image = Image()
+        self.cv_image = CompressedImage()
         self.timestamp = rospy.Time()
 
 
@@ -64,7 +64,7 @@ class MavController:
         self.pose = data.pose
     
     def image_callback(self, msg):
-        self.cv_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding="bgr8")
+        self.cv_image = self.bridge.imgmsg_to_cv2(msg) #, desired_encoding="bgr8")
 
     def goto(self, pose):
         """
