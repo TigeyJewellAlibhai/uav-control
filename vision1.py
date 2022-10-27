@@ -68,6 +68,7 @@ class MavController:
         #self.cv_image = self.bridge.imgmsg_to_cv2(msg) #, desired_encoding="bgr8")
         np_image = np.fromstring(msg.data, np.uint8)
         self.cv_image = cv2.imdecode(np_image, cv2.IMREAD_COLOR)
+        self.binary_image = cv2.inRange(self.cv_image, (self.blue_lower_bound,self.green_lower_bound,self.red_lower_bound), (self.blue_upper_bound,self.green_upper_bound,self.red_upper_bound))
 
     def goto(self, pose):
         """
@@ -155,15 +156,18 @@ class MavController:
 
         M = cv2.moments(self.binary_image)
  
-        # calculate x,y coordinate of center
-        cX = int(M["m10"] / M["m00"])
-        cY = int(M["m01"] / M["m00"])
-        
-        # put text and highlight the center
-        cv2.circle(self.cv_image, (cX, cY), 5, (255, 255, 255), -1)
-        cv2.putText(self.cv_image, "centroid", (cX - 25, cY - 25),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
-        
-        return [cX, cY]
+        if len(M) > 0:
+            # calculate x,y coordinate of center
+            cX = int(M["m10"] / M["m00"])
+            cY = int(M["m01"] / M["m00"])
+            
+            # put text and highlight the center
+            cv2.circle(self.cv_image, (cX, cY), 5, (255, 255, 255), -1)
+            cv2.putText(self.cv_image, "centroid", (cX - 25, cY - 25),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
+            
+            return [cX, cY]
+        else:
+            return None
 
 def simple_demo():
     """
