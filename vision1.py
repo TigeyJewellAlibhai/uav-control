@@ -29,6 +29,7 @@ class MavController:
         self.cmd_vel_pub = rospy.Publisher("/mavros/setpoint_velocity/cmd_vel_unstamped", Twist, queue_size=1)
         self.rc_override = rospy.Publisher("/mavros/rc/override", OverrideRCIn, queue_size=1)
 
+        self.bridge = CvBridge()
         # mode 0 = STABILIZE
         # mode 4 = GUIDED
         # mode 9 = LAND
@@ -40,6 +41,7 @@ class MavController:
         self.pose = Pose()
         self.cv_image = CompressedImage()
         self.timestamp = rospy.Time()
+
 
         self.red_lower_bound = 120
         self.blue_lower_bound = 120
