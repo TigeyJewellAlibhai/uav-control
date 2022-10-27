@@ -66,7 +66,7 @@ class MavController:
     def image_callback(self, msg):
         #self.cv_image = self.bridge.imgmsg_to_cv2(msg) #, desired_encoding="bgr8")
         np_image = np.fromstring(msg.data, np.uint8)
-        self.cv_image = cv2.imdecode(np_image, cv2.CV_LOAD_IMAGE_COLOR)
+        self.cv_image = cv2.imdecode(np_image, cv2.IMREAD_COLOR)
 
     def goto(self, pose):
         """
