@@ -41,6 +41,13 @@ class MavController:
         self.cv_image = Image()
         self.timestamp = rospy.Time()
 
+        self.red_lower_bound = 120
+        self.blue_lower_bound = 120
+        self.green_lower_bound = 120
+        self.red_upper_bound = 200
+        self.blue_upper_bound = 200
+        self.green_upper_bound = 200
+
     def rc_callback(self, data):
         """
         Keep track of the current manual RC values
@@ -123,12 +130,12 @@ class MavController:
         self.arm()
 
         # Set to guided mode
-        #mode_resp = self.mode_service(custom_mode="4")
+        mode_resp = self.mode_service(custom_mode="4")
 
         # Takeoff
         takeoff_resp = self.takeoff_service(altitude=height)
 
-        #return takeoff_resp
+        return takeoff_resp
         return mode_resp
 
     def land(self):
@@ -139,7 +146,7 @@ class MavController:
         resp = self.mode_service(custom_mode="9")
         self.disarm()
 
-def simple_demo():
+def simple_demo(self):
     """
     A simple demonstration of using mavros commands to control a UAV.
     """
