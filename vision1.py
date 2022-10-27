@@ -183,12 +183,13 @@ def simple_demo():
     print("Takeoff Complete. Entering Find Mode")
     
     while True:
-        cv2.namedWindow('video_window')
-        cv2.namedWindow('binary_window')
+        #cv2.namedWindow('video_window')
+        #cv2.namedWindow('binary_window')
         if not c.cv_image is None:
-            c.centroid()
+            [x, y] = c.centroid()
+            print(x, y)
             #print(c.cv_image.shape)
-            cv2.imshow('video_window', c.cv_image)
+            #cv2.imshow('video_window', c.cv_image)
             #cv2.imshow('binary_window', c.binary_image)
         cv2.waitKey(5)
 
