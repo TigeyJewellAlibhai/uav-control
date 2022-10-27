@@ -40,6 +40,7 @@ class MavController:
         self.rc = RCIn()
         self.pose = Pose()
         self.cv_image = CompressedImage()
+        self.binary_image = None
         self.timestamp = rospy.Time()
 
 
@@ -149,6 +150,20 @@ class MavController:
         """
         resp = self.mode_service(custom_mode="9")
         self.disarm()
+    
+    def centroid(self):
+
+        M = cv2.moments(self.binary_image)
+ 
+        # calculate x,y coordinate of center
+        cX = int(M["m10"] / M["m00"])
+        cY = int(M["m01"] / M["m00"])
+        
+        # put text and highlight the center
+        cv2.circle(self.cv_image, (cX, cY), 5, (255, 255, 255), -1)
+        cv2.putText(self.cv_image, "centroid", (cX - 25, cY - 25),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
+        
+        return [cX, cY]
 
 def simple_demo():
     """
@@ -167,10 +182,12 @@ def simple_demo():
         cv2.namedWindow('video_window')
         cv2.namedWindow('binary_window')
         if not c.cv_image is None:
-            c.binary_image = cv2.inRange(c.cv_image, (c.blue_lower_bound,c.green_lower_bound,c.red_lower_bound), (c.blue_upper_bound,c.green_upper_bound,c.red_upper_bound))
+            c.centroid()
             #print(c.cv_image.shape)
             cv2.imshow('video_window', c.cv_image)
             cv2.imshow('binary_window', c.binary_image)
+            
+            cv2.waitKey(0)
         cv2.waitKey(5)
 
     print("Landing")
