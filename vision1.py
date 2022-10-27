@@ -160,6 +160,7 @@ def simple_demo():
     print("Takeoff Complete. Entering Find Mode")
     
     while True:
+        cv2.namedWindow('video_window')
         if not c.cv_image is None:
             #c.binary_image = cv2.inRange(c.cv_image, (c.blue_lower_bound,c.green_lower_bound,c.red_lower_bound), (c.blue_upper_bound,c.green_upper_bound,c.red_upper_bound))
             print(c.cv_image.shape)
