@@ -146,7 +146,7 @@ class MavController:
         resp = self.mode_service(custom_mode="9")
         self.disarm()
 
-def simple_demo(self):
+def simple_demo():
     """
     A simple demonstration of using mavros commands to control a UAV.
     """
@@ -160,11 +160,11 @@ def simple_demo(self):
     print("Takeoff Complete. Entering Find Mode")
     
     while True:
-        if not self.cv_image is None:
-            self.binary_image = cv2.inRange(self.cv_image, (self.blue_lower_bound,self.green_lower_bound,self.red_lower_bound), (self.blue_upper_bound,self.green_upper_bound,self.red_upper_bound))
-            print(self.cv_image.shape)
-            cv2.imshow('video_window', self.cv_image)
-            cv2.imshow('binary_window', self.binary_image)
+        if not c.cv_image is None:
+            c.binary_image = cv2.inRange(c.cv_image, (c.blue_lower_bound,c.green_lower_bound,c.red_lower_bound), (c.blue_upper_bound,c.green_upper_bound,c.red_upper_bound))
+            print(c.cv_image.shape)
+            cv2.imshow('video_window', c.cv_image)
+            cv2.imshow('binary_window', c.binary_image)
         cv2.waitKey(5)
 
     print("Landing")
