@@ -40,7 +40,6 @@ class MavController:
         self.rc = RCIn()
         self.pose = Pose()
         self.cv_image = CompressedImage()
-        self.binary_image = None
         self.timestamp = rospy.Time()
 
 
@@ -68,7 +67,6 @@ class MavController:
         #self.cv_image = self.bridge.imgmsg_to_cv2(msg) #, desired_encoding="bgr8")
         np_image = np.fromstring(msg.data, np.uint8)
         self.cv_image = cv2.imdecode(np_image, cv2.IMREAD_COLOR)
-        self.binary_image = cv2.inRange(self.cv_image, (self.blue_lower_bound,self.green_lower_bound,self.red_lower_bound), (self.blue_upper_bound,self.green_upper_bound,self.red_upper_bound))
 
     def goto(self, pose):
         """
@@ -154,7 +152,8 @@ class MavController:
     
     def centroid(self):
 
-        M = cv2.moments(self.binary_image)
+        binary_image = cv2.inRange(self.cv_image, (self.blue_lower_bound,self.green_lower_bound,self.red_lower_bound), (self.blue_upper_bound,self.green_upper_bound,self.red_upper_bound))
+        M = cv2.moments(binary_image)
  
         if len(M) > 0:
             # calculate x,y coordinate of center
@@ -167,6 +166,7 @@ class MavController:
             
             return [cX, cY]
         else:
+            print('No Centroid Detected')
             return None
 
 def simple_demo():
@@ -189,9 +189,7 @@ def simple_demo():
             c.centroid()
             #print(c.cv_image.shape)
             cv2.imshow('video_window', c.cv_image)
-            cv2.imshow('binary_window', c.binary_image)
-            
-            cv2.waitKey(0)
+            #cv2.imshow('binary_window', c.binary_image)
         cv2.waitKey(5)
 
     print("Landing")
