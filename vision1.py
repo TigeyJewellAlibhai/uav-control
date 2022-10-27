@@ -155,7 +155,7 @@ class MavController:
         binary_image = cv2.inRange(self.cv_image, (self.blue_lower_bound,self.green_lower_bound,self.red_lower_bound), (self.blue_upper_bound,self.green_upper_bound,self.red_upper_bound))
         M = cv2.moments(binary_image)
  
-        if len(M) > 0:
+        if M["m00"] > 0:
             # calculate x,y coordinate of center
             cX = int(M["m10"] / M["m00"])
             cY = int(M["m01"] / M["m00"])
