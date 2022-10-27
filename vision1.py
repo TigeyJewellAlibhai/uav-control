@@ -163,7 +163,7 @@ def simple_demo():
         cv2.namedWindow('video_window')
         if not c.cv_image is None:
             #c.binary_image = cv2.inRange(c.cv_image, (c.blue_lower_bound,c.green_lower_bound,c.red_lower_bound), (c.blue_upper_bound,c.green_upper_bound,c.red_upper_bound))
-            print(c.cv_image.shape)
+            #print(c.cv_image.shape)
             cv2.imshow('video_window', c.cv_image)
             #cv2.imshow('binary_window', c.binary_image)
         cv2.waitKey(5)
