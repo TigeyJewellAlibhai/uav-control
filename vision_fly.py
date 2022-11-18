@@ -157,50 +157,50 @@ class MavController:
         resp = self.mode_service(custom_mode="9")
         self.disarm()
     
-    # def centroid(self):
-    #     # self.binary_image = cv2.inRange(self.cv_image, (self.blue_lower_bound,self.green_lower_bound,self.red_lower_bound), (self.blue_upper_bound,self.green_upper_bound,self.red_upper_bound))
-    #     self.cv_image_HSV = cv2.cvtColor(self.cv_image, cv2.COLOR_BGR2HSV)
-    #     # self.binary_image = cv2.inRange(self.cv_image_HSV, (5,100,110), (24,255,230)) # 26,100,76
-    #     self.binary_image = cv2.inRange(self.cv_image_HSV, (0,0,0), (180,255,255)) 
+    def centroid(self):
+        # self.binary_image = cv2.inRange(self.cv_image, (self.blue_lower_bound,self.green_lower_bound,self.red_lower_bound), (self.blue_upper_bound,self.green_upper_bound,self.red_upper_bound))
+        self.cv_image_HSV = cv2.cvtColor(self.cv_image, cv2.COLOR_BGR2HSV)
+        # self.binary_image = cv2.inRange(self.cv_image_HSV, (5,100,110), (24,255,230)) # 26,100,76
+        self.binary_image = cv2.inRange(self.cv_image_HSV, (105,50,0), (135,255,255)) 
 
-    #     M = cv2.moments(self.binary_image)
+        M = cv2.moments(self.binary_image)
  
-    #     if M["m00"] > 0:
-    #         # calculate x,y coordinate of center
-    #         cX = int(M["m10"] / M["m00"])
-    #         cY = int(M["m01"] / M["m00"])
+        if M["m00"] > 0:
+            # calculate x,y coordinate of center
+            cX = int(M["m10"] / M["m00"])
+            cY = int(M["m01"] / M["m00"])
             
-    #         # put text and highlight the center
-    #         self.cv_image_annotated = self.cv_image.copy()
-    #         cv2.circle(self.cv_image_annotated, (cX, cY), 5, (255, 255, 255), -1)
-    #         cv2.putText(self.cv_image_annotated, "centroid", (cX - 25, cY - 25),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+            # put text and highlight the center
+            self.cv_image_annotated = self.cv_image.copy()
+            cv2.circle(self.cv_image_annotated, (cX, cY), 5, (255, 255, 255), -1)
+            cv2.putText(self.cv_image_annotated, "centroid", (cX - 25, cY - 25),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
             
-    #         return [cX, cY]
-    #     else:
-    #         print('No Centroid Detected')
-    #         self.height = self.cv_image.shape[0]
-    #         self.width = self.cv_image.shape[1]
-    #         return [self.width/2.0, self.height/2.0]
+            return [cX, cY]
+        else:
+            print('No Centroid Detected')
+            self.height = self.cv_image.shape[0]
+            self.width = self.cv_image.shape[1]
+            return [self.width/2.0, self.height/2.0]
 
     def contour_centroid(self):
         self.cv_image_HSV = cv2.cvtColor(self.cv_image, cv2.COLOR_BGR2HSV)
-        self.binary_image = cv2.inRange(self.cv_image_HSV, (108,100,0), (130,255,255)) # 26,100,76
+        self.binary_image = cv2.inRange(self.cv_image_HSV, (108,50,0), (130,255,255)) # 26,100,76
         contours, hierarchy = cv2.findContours(self.binary_image, mode=cv2.RETR_LIST, method=cv2.CHAIN_APPROX_SIMPLE)
         # self.blank_image = np.zeros(self.cv_image.shape[0:2], dtype='uint8') # blank black img
         # self.contours_image = cv2.drawContours(self.blank_image.copy(), contours, -1, (0,255,0), 1)
         # self.contours_orig_image = cv2.drawContours(self.cv_image.copy(), contours, -1, (0,255,0), 1)
         # self.masked_image = cv2.bitwise_and(self.cv_image, self.cv_image, mask=self.binary_image)
         
-        min_width = 5
-        min_height = 5
+        min_width = 3
+        min_height = 3
         max_width = 2000
         max_height = 2000
-        min_area = 20
+        min_area = 10
         max_area = max_width * max_height
         min_perimeter = 0
         min_vertices = 1
         max_vertices = max_area
-        solidity = [50,100]
+        solidity = [30,100]
         min_ratio = 0.3
         max_ratio = 3.0
         output = []
@@ -282,8 +282,8 @@ def simple_demo():
         # cv2.namedWindow('contours_one_window')
         # cv2.namedWindow('contours_one_orig_window')
         if not c.cv_image is None:
-            # [x_pixels, y_pixels] = c.centroid()
-            [x_pixels, y_pixels] = c.contour_centroid()
+            [x_pixels, y_pixels] = c.centroid()
+            # [x_pixels, y_pixels] = c.contour_centroid()
             
             # cv2.imshow('video_window', c.cv_image_annotated)
             # cv2.imshow('binary_window', c.binary_image)
@@ -309,12 +309,14 @@ def simple_demo():
             print("ang_vel", ang_vel)
 
             # CAREFUL! this flies drone
-            # c.set_vel(vx=0, vy=0, vz=0, avx=0, avy=0, avz=ang_vel)
+            c.set_vel(vx=0, vy=0, vz=0, avx=0, avy=0, avz=ang_vel)
+
             # ang_pos += ang_vel
             # print("ang_pos", ang_pos)
             # CAREFUL! this flies drone
             # c.goto_xyz_rpy(0.0,0.0,alt,0,0,ang_pos)
             # rospy.sleep(2)
+
 
         key = cv2.waitKey(1)
         if key == ord('q') or key == 27:
