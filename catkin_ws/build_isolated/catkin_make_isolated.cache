@@ -1,0 +1,2 @@
+apriltag:apriltag_ros/apriltag_ros:aruco_gridboard:raspicam_node:ubiquity_motor
+-G Unix Makefiles -DCATKIN_DEVEL_PREFIX=/home/ubuntu/catkin_ws/devel_isolated -DCMAKE_INSTALL_PREFIX=/home/ubuntu/catkin_ws/install_isolated
